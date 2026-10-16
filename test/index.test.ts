@@ -7081,6 +7081,24 @@ describe("defineCachedHandler", () => {
     expect(runtimeValue).toBe("cloudflare");
   });
 
+  it("inherits request context on filtered request", async () => {
+    let contextValue: unknown;
+    const path = uniquePath();
+    const handler = defineCachedHandler(
+      (event) => {
+        contextValue = (event.req as any).context;
+        return new Response("ok");
+      },
+      { maxAge: 10 },
+    );
+
+    const context = { matchedRoute: path };
+    const req = new Request(`http://localhost${path}`);
+    (req as any).context = context;
+    await handler({ req });
+    expect(contextValue).toBe(context);
+  });
+
   it("handles URL with special characters", async () => {
     const handler = defineCachedHandler(() => new Response("ok"), { maxAge: 10 });
 

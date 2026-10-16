@@ -93,6 +93,9 @@ export function narrowRequest<E extends HTTPEvent>(
     if ((originalReq as any).runtime) {
       (req as any).runtime = (originalReq as any).runtime;
     }
+    if ((originalReq as any).context) {
+      (req as any).context = (originalReq as any).context;
+    }
     // Bind `waitUntil` because adapters may require the original Request receiver.
     if (typeof originalReq.waitUntil === "function") {
       req.waitUntil = originalReq.waitUntil.bind(originalReq);
